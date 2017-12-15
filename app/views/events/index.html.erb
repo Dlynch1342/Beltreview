@@ -1,0 +1,151 @@
+<h1><%= current_user.first_name %></h1>
+<%= link_to "Edit Profile", edit_user_path(current_user) %>
+<h2>Here are some of the events at your State:</h2>
+<!-- HTML Code: Place this code in the document's body (between the 'body' tags) where the table should appear -->
+<table class="GeneratedTable">
+  <thead>
+    <tr>
+        <th>Name</th>
+        <th>Date</th>
+        <th>Location</th>
+        <th>Host</th>
+        <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @events_sameState.each do |e| %>
+        <tr>
+            <td><a href="/events/<%= e.id %>"><%= e.name %></a></td>
+            <td><%= e.name %></td>
+            <td><%= e.date %></td>
+            <td><%= e.location %></td>
+            <td><%= e.user.first_name %></td>
+            <td>
+                <% if e.user_id === current_user.id %>
+                    <form action = "/events" method = "post">
+                        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                        <input type="hidden" name="_method" value="delete">
+                        <input type = 'submit' value = "Delete">
+                    </form>
+                <% end %>
+                <% unless e.users.include?(current_user) %>
+                    <form action = "/events/join" method = "post">
+                        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                        <input type="hidden" name="event_id" value = "<%= e.id %>">
+                        <input type="submit" value = "Join">			
+                    </form>	
+                <% else %>
+                    <form action = "/event/<%= Attendee.where(user:current_user, event:e).first.id%>" method="post">
+                        <input type="hidden" name="authenticity_token" value="<%= form_authenticity_token %>">
+                        <input type="hidden" name="_method" value="delete">
+                        <input type="submit" value = "Cancel">
+                    </form>
+                <% end %>
+            </td>
+        </tr> 
+    <% end %>    
+  </tbody>
+</table>
+
+<h2>Here are some of the events on other State:</h2>
+<table class="GeneratedTable">
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Date</th>
+      <th>Location</th>
+      <th>State</th>
+      <th>Host</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @events_otherState.each do |e| %>
+        <tr>
+            <td><a href="/events/<%= e.id %>"><%= e.name %></a></td>
+            <td><%= e.name %></td>
+            <td><%= e.date %></td>
+            <td><%= e.location %></td>
+            <td><%= e.state %></td>
+            <td><%= e.user.first_name %></td>
+        </tr> 
+    <% end %>
+  </tbody>
+</table>
+
+<h2>Add Event</h2>
+<form action="/events" method="post">
+    <input type='hidden' name='authenticity_token' value='<%= form_authenticity_token %>'>
+    <p>
+        <label>Name:</label>
+        <input type="text" name="event[name]">
+    </p>
+    <p>
+    <label>Date:</label>
+        <input type="date" name="event[date]">
+    </p>
+    <p>
+    <label>Location:</label>
+        <input type="text" name="event[location]">
+    </p>
+    <p>
+        <label for="state">State:</label>
+        <select name="event[state]">
+            <option value="AK">AK</option>
+            <option value="AL">AL</option>
+            <option value="AR">AR</option>
+            <option value="AZ">AZ</option>
+            <option value="CA">CA</option>
+            <option value="CO">CO</option>
+            <option value="CT">CT</option>
+            <option value="DC">DC</option>
+            <option value="DE">DE</option>
+            <option value="FL">FL</option>
+            <option value="GA">GA</option>
+            <option value="HI">HI</option>
+            <option value="IA">IA</option>
+            <option value="ID">ID</option>
+            <option value="IL">IL</option>
+            <option value="IN">IN</option>
+            <option value="KS">KS</option>
+            <option value="KY">KY</option>
+            <option value="LA">LA</option>
+            <option value="MA">MA</option>
+            <option value="MD">MD</option>
+            <option value="ME">ME</option>
+            <option value="MI">MI</option>
+            <option value="MN">MN</option>
+            <option value="MO">MO</option>
+            <option value="MS">MS</option>
+            <option value="MT">MT</option>
+            <option value="NC">NC</option>
+            <option value="ND">ND</option>
+            <option value="NE">NE</option>
+            <option value="NH">NH</option>
+            <option value="NJ">NJ</option>
+            <option value="NM">NM</option>
+            <option value="NV">NV</option>
+            <option value="NY">NY</option>
+            <option value="OH">OH</option>
+            <option value="OK">OK</option>
+            <option value="OR">OR</option>
+            <option value="PA">PA</option>
+            <option value="RI">RI</option>
+            <option value="SC">SC</option>
+            <option value="SD">SD</option>
+            <option value="TN">TN</option>
+            <option value="TX">TX</option>
+            <option value="UT">UT</option>
+            <option value="VA">VA</option>
+            <option value="VT">VT</option>
+            <option value="WA">WA</option>
+            <option value="WI">WI</option>
+            <option value="WV">WV</option>
+            <option value="WY">WY</option>
+        </select>
+    </p>
+    <input type="submit" value="Add Event">
+</form> 
+
+
+
